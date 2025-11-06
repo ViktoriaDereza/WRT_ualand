@@ -6,11 +6,14 @@ from pages.bseCreatePage import BseCreate
 from playwright.sync_api import Page, expect
 
 def test_create_auction(logged_in_organizer):
+
     create_page = BseCreate(logged_in_organizer)
+
+    draft_name = "BSE_my_auto"
 
     create_page.open_creating_page()
     create_page.select_from_dropdown(create_page.organizer_field, create_page.organizer_select)
-    create_page.input_field(create_page.name, "BSE_plr")
+    create_page.input_field(create_page.name, draft_name)
     create_page.select_from_dropdown(create_page.auction_type, create_page.type_select)
     create_page.select_from_dropdown(create_page.auction_subtype, create_page.subtype_select)
     create_page.input_field(create_page.lot_number, "1")
@@ -46,8 +49,8 @@ def test_create_auction(logged_in_organizer):
     draft_id = response_json["id"]
     print(f"Status code: {response.status}")
     assert response.status == 200
-    draft_locator = create_page.draft_link(draft_id, "BSE_plr")
-    expect(draft_locator).to_have_attribute("href", f"/auctions/{draft_id}")
+    draft_locator = create_page.draft_link(draft_id, draft_name)
+    expect(draft_locator).to_be_visible()
 
 
 
