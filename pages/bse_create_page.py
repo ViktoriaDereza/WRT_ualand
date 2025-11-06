@@ -54,11 +54,17 @@ class BseCreate:
         self.upload_file = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[6]/div/div/div[2]/div/div/div/div/div[1]/div[2]/div/div/div[1]/div/input")
 
         self.draft_btn = page.locator("xpath=//*[@id='saveAsDraft']")
-        self.draft_name = page.get_by_role("link", name="BSE_plr")
+
+        self.loc_edite_btn = page.get_by_role("button", name="Редагувати")
+        self.loc_publish_btn = page.get_by_role("button", name="Опублікувати")
+
+
 
     def draft_link(self, draft_id: str, name: str):
         return self.page.locator(f'a[href="/auctions/{draft_id}"]', has_text=name)
 
+    def open(self, url):
+        self.page.goto(url)
     def open_creating_page(self):
         self.my_account_btn.click()
         self.my_auction_link.click()

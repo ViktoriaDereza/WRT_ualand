@@ -1,4 +1,4 @@
-from pages.basePage import BasePage
+from pages.base_page import BasePage
 
 
 
