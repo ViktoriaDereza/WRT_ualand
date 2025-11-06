@@ -23,7 +23,7 @@ def test_create_auction(logged_in_organizer):
 
     create_page.input_field(create_page.start_price, "10000")
     create_page.input_field(create_page.min_step, "2")
-    create_page.notification_close(create_page.close_notification)
+    # create_page.notification_close(create_page.close_notification)
 
     create_page.cav_selection(create_page.cav, create_page.select_cav, create_page.click_cav)
     create_page.input_field(create_page.quantity, "10")
@@ -42,9 +42,14 @@ def test_create_auction(logged_in_organizer):
     with logged_in_organizer.expect_response("**/api/v1.0/auctions") as response_info:
         create_page.draft_btn.click()
     response = response_info.value
+    response_json = response.json()
+    draft_id = response_json["id"]
     print(f"Status code: {response.status}")
     assert response.status == 200
+    draft_locator = create_page.draft_link(draft_id, "BSE_plr")
+    expect(draft_locator).to_have_attribute("href", f"/auctions/{draft_id}")
 
-    # expect(create_page.auct_mame).to_have_text("BSE_plr")
+
+
 
 
