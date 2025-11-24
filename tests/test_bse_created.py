@@ -10,9 +10,7 @@ def test_draft_created(created_draft):
     response = created_draft["response"]
     draft_id = created_draft["draft_id"]
     draft_name = created_draft["draft_name"]
-
     assert response.status == 200
-
     draft_locator = create_page.draft_link(draft_id, draft_name)
     expect(draft_locator).to_be_visible()
 def test_publish_auction(publish_auction, logged_in_organizer):

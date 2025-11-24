@@ -5,18 +5,10 @@ class BidCreate:
     def __init__(self, page: Page, prozorroId: str):
         self.page = page
         self.prozorroId = prozorroId
-
         self.loc_search_field = page.get_by_placeholder("Ідентифікатор, назва, опис аукціону або об'єкта")
         self.loc_search_btn = page.get_by_text("Пошук", exact=True).first
         self.loc_auct_link = page.locator(f'a[href="/auctions/{prozorroId}"]').first
-        # self.loc_take_part = page.get_by_text("Взяти участь")
-        # self.loc_drdwn_profile = page.locator('input[name="userProfileId"]')
-        # self.loc_select_profile = page.get_by_role("option", name="6 | Фізична особа | УчасникДругий")
-        # self.loc_bid_price = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div/div/div[3]/form/div/div[2]/div/div/div[3]/div/div/div")
-        # self.loc_continue_btn = page.get_by_role("button", name="Продовжити")
-        # self.loc_first_chbox = page.get_by_role("checkbox", name="Даю згоду на обробку персональних даних та приймаю умови")
-        # self.loc_second_chbox = page.get_by_role("checkbox", name="Ознайомлений з")
-        # self.loc_publish_btn = page.get_by_role("button", name="Опублікувати")
+
 
     def open_bid_page(self):
         self.loc_search_field.click()

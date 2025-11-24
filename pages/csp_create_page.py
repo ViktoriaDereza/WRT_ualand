@@ -1,5 +1,6 @@
 from playwright.sync_api import expect
 from playwright.sync_api import Page
+from config import  BASE_URL
 
 
 class CspCreate:
@@ -54,8 +55,11 @@ class CspCreate:
         self.draft_btn = page.locator("xpath=//*[@id='saveAsDraft']")
 
     def draft_link(self, draft_id: str, name: str):
-        return self.page.locator(f'a[href="/auctions/{draft_id}"]', has_text=name)
+        return self.page.locator(f'a[href="/my-auctions/{draft_id}"]', has_text=name)
 
+    def open_myauction_page(self):
+        self.url = f"{BASE_URL}/my-auctions"
+        self.page.goto(self.url)
 
     def open_creating_page(self):
         self.my_account_btn.click()
