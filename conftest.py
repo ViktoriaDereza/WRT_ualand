@@ -16,7 +16,7 @@ def logged_in_admin(browser):
     login_page.login_adm("admin@test.com", "Test12345")
     yield page
     context.close()
-@pytest.fixture
+@pytest.fixture (scope="module")
 def logged_in_organizer(browser):
     context = browser.new_context()   # створюємо ізольований контекст
     page = context.new_page()
@@ -43,12 +43,12 @@ def logged_in_bidder2(browser):
     login_page.login("ukr3@gmail.com", "Test12345!")
     yield page
     context.close()
-@pytest.fixture
+@pytest.fixture(scope="module")
 def request_context(playwright):
     ctx = playwright.request.new_context(base_url=BASE_URL)
     yield ctx
     ctx.dispose()
-@pytest.fixture
+@pytest.fixture(scope="module")
 def api_login(request_context):
         response = request_context.post("/auth/api/v1.0/login", data={"email": USER_NAME_ORGANIZER, "password": PASSWORD})
         assert response.status == 200
@@ -73,7 +73,7 @@ def api_login_bidder2(request_context):
         assert token
         headers = {"Authorization": f"Bearer {token}"}
         yield request_context, headers
-@pytest.fixture
+@pytest.fixture(scope="module")
 def api_auction_create(api_login):
     request_context, headers = api_login
     response = request_context.post("api/v1.0/auctions",  data=json.dumps(CSP_PAYLOAD), headers={**headers, "Content-Type": "application/json"})
@@ -82,7 +82,7 @@ def api_auction_create(api_login):
     response_json = response.json()
     draft_id = response_json["id"]
     return draft_id
-@pytest.fixture
+@pytest.fixture(scope="module")
 def api_auction_publish(api_login, api_auction_create):
     request_context, headers = api_login
     draft_id = api_auction_create
