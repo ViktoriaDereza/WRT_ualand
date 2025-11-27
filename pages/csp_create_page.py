@@ -1,6 +1,6 @@
 from playwright.sync_api import expect
 from playwright.sync_api import Page
-from config import  BASE_URL
+from config import BASE_URL
 
 
 class CspCreate:
@@ -16,7 +16,7 @@ class CspCreate:
 
         self.description = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[2]/div/div[2]/div/div[2]/div/div[1]/div/textarea[1]")
         self.auction_type = page.get_by_role("button", name="Оберіть тип процедури")
-        self.type_select = page.get_by_role("option", name="Продаж на \"англійському аукціоні\"")
+        self.type_select = page.get_by_role("option", name="Комерційні продажі на \"англійському аукціоні з переважним правом\"")
         self.auction_subtype = page.get_by_role("button", name="USUAL")
         self.subtype_select = page.get_by_role("option", name="FAST_MANUAL", exact=True)
 
@@ -30,12 +30,27 @@ class CspCreate:
         self.min_step = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[3]/div/div[2]/div[2]/div/div[1]/div/input")
 
         self.close_notification = page.locator("xpath=/html/body/div[2]/div[3]/div/button")
+#priority data
+
+        self.identifier_field = page.locator('[id="mui-component-select-specificData.tenants.0.identifierScheme"]')
+        self.identifier_select = page.get_by_role("option", name="ЄДРПОУ")
+        self.full_name = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[4]/div/div[2]/div/div/div/div[1]/div/div/div[2]/div/div/div/input")
+        self.codEDRPOU = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[4]/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div/div/input")
+        self.region = page.locator("xpath=//*[@id='mui-component-select-specificData.tenants.0.address.region']")
+        self.region_select = page.get_by_role("option", name="Запорізька область")
+        self.city = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[4]/div/div[2]/div/div/div/div[3]/div/div[1]/div/div/div/div[3]/div/div[2]/div/div[1]/div/input")
+        self.address = page.locator("//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[4]/div/div[2]/div/div/div/div[3]/div/div[1]/div/div/div/div[3]/div/div[3]/div/div[1]/div/input")
+        self.postal_code = page.locator("//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[4]/div/div[2]/div/div/div/div[3]/div/div[1]/div/div/div/div[3]/div/div[4]/div/div[1]/div/input")
+        self.from_f = page.locator("//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[4]/div/div[2]/div/div/div/div[3]/div/div[3]/div/div/div[2]/div/div[1]/div/div/div/input")
+
+
+
 
         self.cav = page.get_by_placeholder("Оберіть основний класифікатор")
         self.select_cav = page.get_by_role("treeitem", name="16000000-5").get_by_role("checkbox")
         self.click_cav = page.get_by_role("button", name="Обрати")
 
-        self.lot_description = page.locator("xpath=//*[@id='root']/div[1]/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[4]/div/div[3]/div[4]/div/div[1]/div/textarea[1]")
+        self.lot_description = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[5]/div/div[3]/div[4]/div/div[1]/div/textarea[1]")
         self.quantity = page.locator('input[name="specificData.lots.0.quantity"]')
         self.measure = page.locator("xpath=//*[@id='mui-component-select-specificData.lots.0.measureUnit']")
         self.measure_select = page.get_by_text("штуки")
@@ -46,13 +61,16 @@ class CspCreate:
         self.select_region = page.get_by_role("option", name="Запорізька область")
         self.town = page.get_by_role("textbox", name="Введіть назву").nth(1)
 
-        self.koatu = page.locator("xpath=//*[@id='root']/div[1]/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[4]/div/div[3]/div[5]/div/div[8]/div/div[1]/div/input")
+        self.koatu = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[5]/div/div[3]/div[5]/div/div[8]/div/div[1]/div/input")
         self.reg_details = page.locator("xpath=//*[@id='mui-component-select-specificData.lots.0.registrationDetails.status']")
         self.reg_details_select = page.get_by_text("Не зареєстровано")
         self.bank_data = page.get_by_text("Заповнити реквізити з мого профілю")
-        self.upload_file = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[6]/div/div/div[2]/div/div/div/div/div[1]/div[2]/div/div/div[1]/div/input")
+        self.add_doc = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[7]/div/div/div[1]/div[2]/div/div/div/div[2]/button/span[2]")
+        self.upload_file = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[7]/div/div/div[2]/div/div/div/div/div[1]/div[2]/div/div[2]/div[1]/div/input")
 
         self.draft_btn = page.locator("xpath=//*[@id='saveAsDraft']")
+        self.publish_btn = page.get_by_role("button", name="Опублікувати")
+
 
     def draft_link(self, draft_id: str, name: str):
         return self.page.locator(f'a[href="/my-auctions/{draft_id}"]', has_text=name)
@@ -61,6 +79,8 @@ class CspCreate:
         self.url = f"{BASE_URL}/my-auctions"
         self.page.goto(self.url)
 
+    def open(self, url):
+        self.page.goto(url)
     def open_creating_page(self):
         self.my_account_btn.click()
         self.my_auction_link.click()
@@ -70,7 +90,7 @@ class CspCreate:
     def select_from_dropdown(self, dropdown_locator, option_locator):
          dropdown_locator.click()
          expect(option_locator).to_be_visible(timeout=5000)
-         option_locator.click()
+         option_locator.click(force=True)
 
     def input_field(self, value_locator, value):
         value_locator.click()

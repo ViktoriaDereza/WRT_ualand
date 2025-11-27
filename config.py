@@ -6,7 +6,7 @@ PARTICIPANT1_PROFILE_ID = "142"
 USER_NAME_PARTICIPANT2 = "ukr3@gmail.com"
 USER_NAME_ORGANIZER = "ukr11@gmail.com"
 PASSWORD = "Test12345!"
-AUCTION_NAME = "AuctionName"
+AUCTION_NAME = "Auction27"
 CSP_PAYLOAD = {
     "bankAccounts": [
         {
@@ -34,7 +34,7 @@ CSP_PAYLOAD = {
     "subtype": "FAST_MANUAL",
     "type": "COMMERCIAL_SELL_PRIORITY_ENGLISH",
     "userProfileId": 97,
-    "startedAt": "2025-11-26T07:00:00.000Z",
+    "startedAt": "2025-12-26T07:00:00.000Z",
     "lotNumber": "1",
     "accessDetails": None,
     "currency": "UAH",
