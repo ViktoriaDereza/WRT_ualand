@@ -1,4 +1,5 @@
 # from pages.basePage import BasePage
+import re
 from playwright.sync_api import expect
 from playwright.sync_api import Page
 
@@ -9,26 +10,26 @@ class BseCreate:
         # super().__init__(page)
         self.my_account_btn = page.get_by_role("button", name="Особистий кабінет")
         self.my_auction_link = page.get_by_role("link", name="Мої аукціони")
-        self.create_auction_btn = page.get_by_role("button", name="Створити аукціон")
-        self.organizer_field = page.get_by_label("", exact=True)
+        self.create_auction_btn = page.get_by_role("link", name="Створити аукціон")
+        self.organizer_field = page.get_by_text("Оберіть профіль", exact=False).locator("xpath=following::div[@role='combobox'][1]")
         self.organizer_select = page.get_by_role("option", name="ТОВ \"Буб\"")
         self.name = page.get_by_role("textbox", name="Введіть назву")
         self.lot_number = page.get_by_placeholder("Введіть номер лотa")
 
-        self.description = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[2]/div/div[2]/div/div[2]/div/div[1]/div/textarea[1]")
-        self.auction_type = page.get_by_role("button", name="Оберіть тип процедури")
+        self.description = page.get_by_text("Опис аукціону", exact=False).locator("xpath=following::textarea[1]")
+        self.auction_type = page.get_by_role("combobox", name="Оберіть тип процедури")
         self.type_select = page.get_by_role("option", name="Продаж на \"англійському аукціоні\"")
-        self.auction_subtype = page.get_by_role("button", name="USUAL")
+        self.auction_subtype = page.get_by_role("combobox", name="USUAL")
         self.subtype_select = page.get_by_role("option", name="FAST_MANUAL", exact=True)
 
         self.date = page.locator("input[name=\"date\"]")
-        self.time = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[2]/div/div[2]/div/div[1]/div/div[3]/div/div[1]/div/input")
-        self.tender_attempt = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[2]/div/div[2]/div/div[1]/div/div[4]/div/div[1]/div/input")
+        self.time = page.get_by_text("Час проведення аукціону", exact=False).locator("xpath=following::input[1]")
+        self.tender_attempt = page.get_by_text("Лот виставляється", exact=False).locator("xpath=following::input[1]")
 
         self.start_price = page.locator('input[name="specificData.initialAmount"]')
         self.registry = page.locator('input[name="specificData.registrationAmount"]')
         self.guarantee = page.locator('input[name="specificData.guaranteeAmount"]')
-        self.min_step = page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[3]/div/div[2]/div[2]/div/div[1]/div/input")
+        self.min_step = page.get_by_text("Мінімальний крок аукціону, %", exact=False).locator("xpath=following::input[1]")
 
         self.close_notification = page.locator("xpath=/html/body/div[2]/div[3]/div/button")
 
@@ -36,18 +37,18 @@ class BseCreate:
         self.select_cav = page.get_by_role("treeitem", name="16000000-5").get_by_role("checkbox")
         self.click_cav = page.get_by_role("button", name="Обрати")
 
-        self.lot_description = page.locator("xpath=//*[@id='root']/div[1]/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[4]/div/div[3]/div[4]/div/div[1]/div/textarea[1]")
+        self.lot_description = page.get_by_text("Опис об'єкта", exact=False).locator("xpath=following::textarea[1]")
         self.quantity = page.locator('input[name="specificData.lots.0.quantity"]')
-        self.measure = page.locator("xpath=//*[@id='mui-component-select-specificData.lots.0.measureUnit']")
-        self.measure_select = page.get_by_text("штуки")
+        self.measure = page.get_by_text("Одиниці виміру", exact=False).locator("xpath=following::div[@role='combobox'][1]")
+        self.measure_select = page.get_by_role("option", name="штуки")
 
-        self.dropdown_country = page.locator("[id=\"mui-component-select-specificData.lots.0.address.country\"]")
+        self.dropdown_country = page.get_by_text(re.compile(r"^Країна")).first.locator("xpath=following::div[@role='combobox'][1]")
         self.select_country = page.get_by_role("option", name="Україна")
-        self.dropdown_region = page.get_by_role("button", name="Оберіть опцію")
+        self.dropdown_region = page.get_by_text(re.compile(r"^Область")).first.locator("xpath=following::div[@role='combobox'][1]")
         self.select_region = page.get_by_role("option", name="Запорізька область")
-        self.town = page.get_by_role("textbox", name="Введіть назву").nth(1)
+        self.town = page.get_by_text("Населений пункт", exact=False).first.locator("xpath=following::input[1]")
 
-        self.koatu = page.locator("xpath=//*[@id='root']/div[1]/div[2]/div/main/div/div/div/div/div[3]/div/div/div/div[4]/div/div[3]/div[5]/div/div[8]/div/div[1]/div/input")
+        self.koatu = page.get_by_text("адміністративно-територіального устрою", exact=False).locator("xpath=following::input[1]")
         self.reg_details = page.locator("xpath=//*[@id='mui-component-select-specificData.lots.0.registrationDetails.status']")
         self.reg_details_select = page.get_by_text("Не зареєстровано")
         self.bank_data = page.get_by_text("Заповнити реквізити з мого профілю")

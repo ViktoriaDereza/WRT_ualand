@@ -4,6 +4,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from playwright.sync_api import expect
 from pages.csp_create_page import CspCreate
 from config import BASE_URL
+from utils.date_generator import DataGenerator
 
 # def test_api_publish(api_login, api_auction_create):
 #     request_context, headers = api_login
@@ -23,8 +24,8 @@ def test_draft_created(logged_in_organizer):
     create_page.input_field(create_page.lot_number, "1")
     create_page.input_field(create_page.description, "Опис аукціону")
 
-    create_page.input_field(create_page.date, "19.12.2025_")
-    create_page.input_field(create_page.time, "09:04")
+    create_page.input_field(create_page.date, DataGenerator.current_date())
+    create_page.input_field(create_page.time, DataGenerator.current_time_plus_any_minutes(45))
 
     create_page.input_field(create_page.tender_attempt, "1")
 
@@ -56,7 +57,7 @@ def test_draft_created(logged_in_organizer):
     create_page.add_doc.click()
     create_page.file_upload(create_page.upload_file)
 
-    with logged_in_organizer.expect_response("**/api/v1.0/auctions") as response_info:
+    with logged_in_organizer.expect_response("**/api/auctions") as response_info:
         create_page.draft_btn.click()
     response = response_info.value
     response_json = response.json()
@@ -70,7 +71,7 @@ def test_publish_auction(logged_in_organizer, api_auction_create):
     draft_id = api_auction_create
     publish_page.open(f"{BASE_URL}/edit-auction/{draft_id}")
 
-    with logged_in_organizer.expect_response(f"**/api/v1.0/auctions/{draft_id}/publish") as response_info:
+    with logged_in_organizer.expect_response(f"**/api/auctions/{draft_id}/publish") as response_info:
         publish_page.publish_btn.click()
     response = response_info.value
     response_json = response.json()

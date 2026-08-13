@@ -34,7 +34,6 @@ CSP_PAYLOAD = {
     "subtype": "FAST_MANUAL",
     "type": "COMMERCIAL_SELL_PRIORITY_ENGLISH",
     "userProfileId": 97,
-    "startedAt": "2025-12-26T07:00:00.000Z",
     "lotNumber": "1",
     "accessDetails": None,
     "currency": "UAH",
