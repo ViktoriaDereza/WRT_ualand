@@ -1,6 +1,5 @@
 import pytest
 from pages.login import LoginPage
-from pages.bse_create_page import BseCreate
 from playwright.sync_api import sync_playwright
 from config import BASE_URL, USER_NAME_ORGANIZER, USER_NAME_PARTICIPANT1, USER_NAME_PARTICIPANT2, PASSWORD, CSP_PAYLOAD, PARTICIPANT1_PROFILE_ID
 from utils.date_generator import DataGenerator
