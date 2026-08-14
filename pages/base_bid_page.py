@@ -21,13 +21,13 @@ class BidCreate:
         self.page = new_page_info.value
         self.page.wait_for_load_state()
         self.loc_take_part = self.page.get_by_role("button", name="Взяти участь")
-        self.loc_drdwn_profile = self.page.locator("xpath=//*[@id='mui-component-select-userProfileId']/div")
+        self.loc_drdwn_profile = self.page.get_by_role("combobox", name="Не визначено")
         self.loc_select_profile = self.page.get_by_role("option").first
 
-        self.loc_bid_price = self.page.locator("xpath=//*[@id='root']/div/div[2]/div/main/div/div/div/div/div/div/div[3]/form/div/div[2]/div/div/div[3]/div/div[1]/div/input")
+        self.loc_bid_price = self.page.get_by_role("textbox", name="Не визначено")
         self.loc_continue_btn = self.page.get_by_role("button", name="Продовжити")
-        self.loc_first_chbox = self.page.get_by_role("checkbox", name="Даю згоду на обробку персональних даних та приймаю умови")
-        self.loc_second_chbox = self.page.get_by_role("checkbox", name="Ознайомлений з")
+        self.loc_first_chbox = self.page.get_by_role("checkbox", name="Даю згоду на обробку персональних даних та приймаю умови Політики конфіденційнос")
+        self.loc_second_chbox = self.page.get_by_role("checkbox", name="Ознайомлений з Регламентом роботи системи електронних торгів")
         self.loc_publish_btn = self.page.get_by_role("button", name="Опублікувати")
     def select_from_dropdown(self, dropdown_locator, option_locator):
          dropdown_locator.click()

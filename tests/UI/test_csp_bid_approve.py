@@ -12,4 +12,3 @@ def test_bid_approve(logged_in_admin, api_bid_create):
     page.approve_bid()
     expect(page.page).to_have_url(f"{BASE_URL_ADMIN}/bids?type=all")
 
-

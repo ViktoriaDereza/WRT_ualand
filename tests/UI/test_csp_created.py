@@ -6,11 +6,6 @@ from pages.csp_create_page import CspCreate
 from config import BASE_URL
 from utils.date_generator import DataGenerator
 
-# def test_api_publish(api_login, api_auction_create):
-#     request_context, headers = api_login
-#     draft_id = api_auction_create
-#     response = request_context.post(f"api/v1.0/auctions/{draft_id}/publish", headers=headers)
-#     assert response.status == 200
 
 def test_draft_created(logged_in_organizer):
     create_page = CspCreate(logged_in_organizer)

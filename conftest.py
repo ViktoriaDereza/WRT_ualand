@@ -15,6 +15,7 @@ def logged_in_admin(browser):
     login_page = LoginPage(page)
     login_page.open_adm()
     login_page.login_adm("admin@test.com", "Test12345")
+    page.wait_for_url("**/land-admin/users/all", timeout=10000)
     yield page
     context.close()
 @pytest.fixture (scope="module")

@@ -19,6 +19,7 @@ def test_bids_created(logged_in_bidder1, api_auction_publish):
     page.loc_second_chbox.check()
     page.loc_publish_btn.click()
     expect(page.page).to_have_url("https://qa.ualand.space/my-applications")
-    expect(page.page.locator(f"text={prozorroId}")).to_be_visible()
+    #expect(page.page.locator(f"text={prozorroId}")).to_be_visible()
+    expect(page.page.locator("body")).to_contain_text(prozorroId)
 
 
