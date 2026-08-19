@@ -22,7 +22,6 @@ class CspCreate:
         self.type_select = page.get_by_role("option", name="Комерційні продажі на \"англійському аукціоні з переважним правом\"")
         self.auction_subtype = page.get_by_role("combobox", name="USUAL")
         self.subtype_select = page.get_by_role("option", name="FAST_MANUAL", exact=True)
-
         self.date = page.locator("input[name=\"date\"]")
         self.time = page.get_by_text("Час проведення аукціону", exact=False).locator("xpath=following::input[1]")
         self.tender_attempt = page.get_by_text("Лот виставляється", exact=False).locator("xpath=following::input[1]")
@@ -88,6 +87,7 @@ class CspCreate:
         self.my_account_btn.click()
         self.my_auction_link.click()
         self.create_auction_btn.click()
+        self.disable_chat_widget_overlay()
 
 
     def close_telegram_modal(self):
@@ -95,11 +95,18 @@ class CspCreate:
         if close_btn.is_visible():
             close_btn.click()
 
+    def disable_chat_widget_overlay(self):
+        # The bwchat live-chat widget's offline greeting bubble can overlap
+        # form controls (e.g. open dropdown menu items) and silently swallow
+        # clicks. Neutralize it via CSS so it never intercepts pointer events,
+        # regardless of when it mounts.
+        self.page.add_style_tag(content="bwchat, bwchat * { pointer-events: none !important; }")
+
     def select_from_dropdown(self, dropdown_locator, option_locator):
          self.close_telegram_modal()
          dropdown_locator.click()
          expect(option_locator).to_be_visible(timeout=5000)
-         option_locator.click(force=True)
+         option_locator.click()
 
     def input_field(self, value_locator, value):
         self.close_telegram_modal()

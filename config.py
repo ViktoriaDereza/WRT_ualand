@@ -1,11 +1,17 @@
 
-BASE_URL = "https://qa.ualand.space"
-BASE_URL_ADMIN = "https://qa.ualand.space/land-admin"
+BASE_URL = "https://qa.ualand.utest.pro"
+BASE_URL_ADMIN = "https://qa.ualand.utest.pro//land-admin"
 USER_NAME_PARTICIPANT1 = "ukr@gmail.com"
 PARTICIPANT1_PROFILE_ID = "142"
 USER_NAME_PARTICIPANT2 = "ukr3@gmail.com"
-USER_NAME_ORGANIZER = "ukr11@gmail.com"
+#USER_NAME_ORGANIZER = "ukr11@gmail.com"
+USER_NAME_ORGANIZER = "trtr@gmail.com"
 PASSWORD = "Test12345!"
+ADMIN_EMAIL = "admin@test.com"
+ADMIN_PASSWORD = "Test12345"
+INVALID_LOGIN_EMAIL = "qa_wrongpass_probe@example.com"
+INVALID_LOGIN_EMAIL_2 = "qa_nonexistent_user_582f@example.com"
+INVALID_LOGIN_PASSWORD = "WrongPass123!"
 AUCTION_NAME = "Auction27"
 CSP_PAYLOAD = {
     "bankAccounts": [

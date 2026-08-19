@@ -10,6 +10,8 @@ class LoginPage(BasePage):
         self.password = page.locator("input[type='password']")
         self.submit = page.get_by_role("button", name="Увійти")
         self.submit_adm = page.get_by_role("button", name="Вхід")
+        self.login_error = page.get_by_text("Не коректно введена пошта або пароль").first
+        self.logout_icon = page.locator('[data-testid="ExitToAppIcon"]')
 
 
     def open(self):
@@ -25,3 +27,6 @@ class LoginPage(BasePage):
         self.username.fill(username)
         self.password.fill(password)
         self.submit_adm.click()
+
+    def logout(self):
+        self.logout_icon.click()
