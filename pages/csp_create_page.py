@@ -14,7 +14,7 @@ class CspCreate:
         self.my_auction_link = page.get_by_role("link", name="Мої аукціони")
         self.create_auction_btn = page.get_by_role("link", name="Створити аукціон")
         self.organizer_field = page.get_by_text("Оберіть профіль", exact=False).locator("xpath=following::div[@role='combobox'][1]")
-        self.organizer_select = page.get_by_role("option", name="ТОВ \"Буб\"")
+        self.organizer_select = page.get_by_role("option").last
         self.name = page.get_by_role("textbox", name="Введіть назву")
         self.lot_number = page.get_by_placeholder("Ведіть номер лотa")
         self.description = page.get_by_text("Опис аукціону", exact=False).locator("xpath=following::textarea[1]")
@@ -88,6 +88,7 @@ class CspCreate:
         self.my_auction_link.click()
         self.create_auction_btn.click()
         self.disable_chat_widget_overlay()
+        self.disable_telegram_promo_overlay()
 
 
     def close_telegram_modal(self):
@@ -101,6 +102,16 @@ class CspCreate:
         # clicks. Neutralize it via CSS so it never intercepts pointer events,
         # regardless of when it mounts.
         self.page.add_style_tag(content="bwchat, bwchat * { pointer-events: none !important; }")
+
+    def disable_telegram_promo_overlay(self):
+        # A "subscribe to our Telegram bot" promo dialog pops in on its own
+        # timer (~15s after the page loads) regardless of what the test is
+        # doing, so it can open mid-click and swallow the click that was
+        # already in flight. Neutralize it via CSS as soon as the page loads
+        # so it can never intercept pointer events, however late it appears.
+        self.page.add_style_tag(
+            content=".MuiDialog-container:has(a[href*='t.me/']) { pointer-events: none !important; }"
+        )
 
     def select_from_dropdown(self, dropdown_locator, option_locator):
          self.close_telegram_modal()
@@ -125,6 +136,16 @@ class CspCreate:
         locator.click()
         expect(dropdown_locator).to_be_visible(timeout=5000)
         dropdown_locator.check()
+        # "Обрати" closes the dialog itself, but closing used to be left to
+        # an accidental side effect of the *next* field's close_telegram_modal()
+        # call, which matches ANY open dialog on the page. That races with the
+        # Telegram promo dialog's own ~15s popup timer: if that timer fires
+        # around the same moment, the classifier dialog is left stuck at full
+        # opacity, still intercepting clicks on the fields behind it. Wait
+        # here, right after confirming the selection, until this dialog
+        # (scoped to itself) has actually closed before moving on.
+        dialog = option_locator.locator("xpath=ancestor::div[@role='dialog']")
         option_locator.click()
+        expect(dialog).to_be_hidden(timeout=5000)
 
 

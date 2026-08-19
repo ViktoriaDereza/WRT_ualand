@@ -1,6 +1,6 @@
 from pages.base_page import BasePage
 import re
-
+from config import BASE_URL
 
 
 class LoginPage(BasePage):
@@ -15,9 +15,9 @@ class LoginPage(BasePage):
 
 
     def open(self):
-        self.page.goto("https://qa.ualand.space/login")
+        self.page.goto(f"{BASE_URL}/login")
     def open_adm(self):
-        self.page.goto("https://qa.ualand.space/land-admin/login")
+        self.page.goto(f"{BASE_URL}/land-admin/login")
     def login(self, username, password):
         self.username.fill(username)
         self.password.fill(password)

@@ -23,7 +23,7 @@ def logged_in_organizer(browser):
     page = context.new_page()
     login_page = LoginPage(page)
     login_page.open()
-    login_page.login("ukr11@gmail.com", "Test12345!")
+    login_page.login(f"{USER_NAME_ORGANIZER}", f"{PASSWORD}")
     page.wait_for_url("**/auctions?status=active_tendering", timeout=10000)
     yield page
     context.close()
