@@ -1,13 +1,15 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+import pytest
 from playwright.sync_api import expect
 from pages.csp_create_page import CspCreate
 from config import BASE_URL
 from utils.date_generator import DataGenerator
 
 
-def test_draft_created(logged_in_organizer):
+@pytest.fixture(scope="module")
+def ui_auction_draft_with_document(logged_in_organizer):
     create_page = CspCreate(logged_in_organizer)
     draft_name = "Autotest Draft new"
     # Створення чернетки
@@ -57,13 +59,19 @@ def test_draft_created(logged_in_organizer):
     response = response_info.value
     response_json = response.json()
     draft_id = response_json["id"]
+    return draft_id
+
+
+def test_draft_created(logged_in_organizer, ui_auction_draft_with_document):
+    create_page = CspCreate(logged_in_organizer)
+    draft_id = ui_auction_draft_with_document
     create_page.open_myauction_page()
     draft_locator = create_page.page.locator(f"a:has-text('{draft_id}')")
     expect(draft_locator).to_be_visible()
 
-def test_publish_auction(logged_in_organizer, api_auction_create):
+def test_publish_auction(logged_in_organizer, ui_auction_draft_with_document):
     publish_page = CspCreate(logged_in_organizer)
-    draft_id = api_auction_create
+    draft_id = ui_auction_draft_with_document
     publish_page.open(f"{BASE_URL}/edit-auction/{draft_id}")
 
     with logged_in_organizer.expect_response(f"**/api/auctions/{draft_id}/publish") as response_info:
