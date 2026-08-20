@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page, expect, Error as PlaywrightError
 
 
 class BidCreate:
@@ -37,5 +37,28 @@ class BidCreate:
     def input_field(self, value_locator, value):
         value_locator.click()
         value_locator.fill(value)
+
+    def check_and_verify(self, checkbox_locator, timeout: int = 15000, attempts: int = 3):
+        # Right after "Продовжити" is clicked, the step content remounts
+        # (draft application is created and the page navigates to its edit
+        # route) and a transient MUI wrapper Box mounts over the section for
+        # a few hundred ms before unmounting - it intercepts pointer events
+        # and can detach/re-render the checkbox mid-interaction. check()'s
+        # own actionability wait already blocks on the element being
+        # unobscured and stable, but if the remount swaps the checkbox node
+        # out between that wait and the click landing, the state change is
+        # lost even though the click "succeeded". Retrying the whole
+        # check+verify cycle (instead of a fixed delay) recovers from that
+        # race: each retry re-resolves the locator against the current DOM
+        # and re-checks the actual checked state.
+        last_error = None
+        for _ in range(attempts):
+            try:
+                checkbox_locator.check(timeout=timeout)
+                expect(checkbox_locator).to_be_checked(timeout=timeout)
+                return
+            except (PlaywrightError, AssertionError) as error:
+                last_error = error
+        raise last_error
 
 

@@ -88,7 +88,6 @@ class CspCreate:
         self.my_auction_link.click()
         self.create_auction_btn.click()
         self.disable_chat_widget_overlay()
-        self.disable_telegram_promo_overlay()
 
 
     def close_telegram_modal(self):
@@ -102,16 +101,6 @@ class CspCreate:
         # clicks. Neutralize it via CSS so it never intercepts pointer events,
         # regardless of when it mounts.
         self.page.add_style_tag(content="bwchat, bwchat * { pointer-events: none !important; }")
-
-    def disable_telegram_promo_overlay(self):
-        # A "subscribe to our Telegram bot" promo dialog pops in on its own
-        # timer (~15s after the page loads) regardless of what the test is
-        # doing, so it can open mid-click and swallow the click that was
-        # already in flight. Neutralize it via CSS as soon as the page loads
-        # so it can never intercept pointer events, however late it appears.
-        self.page.add_style_tag(
-            content=".MuiDialog-container:has(a[href*='t.me/']) { pointer-events: none !important; }"
-        )
 
     def select_from_dropdown(self, dropdown_locator, option_locator):
          self.close_telegram_modal()

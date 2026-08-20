@@ -5,11 +5,45 @@ from config import BASE_URL, USER_NAME_ORGANIZER, USER_NAME_PARTICIPANT1, USER_N
 from utils.date_generator import DataGenerator
 import json
 
+def pytest_collection_modifyitems(items):
+    order = {
+        "test_csp_created.py": 1,
+        "test_csp_bid_created.py": 2,
+        "test_csp_two_bid_created.py": 3,
+        "test_csp_bid_approve.py": 4,
+    }
+
+    items.sort(
+        key=lambda item: order.get(item.path.name, 999)
+    )
+
+
+# A "subscribe to our Telegram bot" promo dialog pops up on its own timer
+# (~30s after login, independent of route) and can intercept clicks on
+# whatever the test happens to be doing at that moment. Likewise, a notistack
+# "your profile is activated" toast pops in asynchronously (independent of
+# any action the test takes) and renders bottom-right, where it can overlap
+# the last entries of an open dropdown - e.g. FAST_MANUAL in the auction
+# subtype list - and swallow the click. add_style_tag() only affects the
+# current document, so it doesn't survive a full page.goto() or a new tab
+# (e.g. the tab BidCreate opens for the auction page). Registering this as a
+# context-level init script instead re-injects the CSS into every document
+# the context ever loads - including new tabs - so it's set up once per
+# context, before login, and needs no further attention from page objects.
+TELEGRAM_PROMO_NEUTRALIZE_SCRIPT = """
+document.addEventListener('DOMContentLoaded', () => {
+    const style = document.createElement('style');
+    style.textContent = ".MuiDialog-container:has(a[href*='t.me/']) { pointer-events: none !important; }" +
+        "[class*='notistack-MuiContent'] { pointer-events: none !important; }";
+    document.head.appendChild(style);
+});
+"""
 
 
 @pytest.fixture
 def logged_in_admin(browser):
     context = browser.new_context()   # створюємо ізольований контекст
+    context.add_init_script(TELEGRAM_PROMO_NEUTRALIZE_SCRIPT)
     page = context.new_page()
     login_page = LoginPage(page)
     login_page.open_adm()
@@ -20,6 +54,7 @@ def logged_in_admin(browser):
 @pytest.fixture (scope="module")
 def logged_in_organizer(browser):
     context = browser.new_context()   # створюємо ізольований контекст
+    context.add_init_script(TELEGRAM_PROMO_NEUTRALIZE_SCRIPT)
     page = context.new_page()
     login_page = LoginPage(page)
     login_page.open()
@@ -30,6 +65,7 @@ def logged_in_organizer(browser):
 @pytest.fixture
 def logged_in_bidder1(browser):
     context = browser.new_context()   # створюємо ізольований контекст
+    context.add_init_script(TELEGRAM_PROMO_NEUTRALIZE_SCRIPT)
     page = context.new_page()
     login_page = LoginPage(page)
     login_page.open()
@@ -39,6 +75,7 @@ def logged_in_bidder1(browser):
 @pytest.fixture
 def logged_in_bidder2(browser):
     context = browser.new_context()
+    context.add_init_script(TELEGRAM_PROMO_NEUTRALIZE_SCRIPT)
     page = context.new_page()
     login_page = LoginPage(page)
     login_page.open()
