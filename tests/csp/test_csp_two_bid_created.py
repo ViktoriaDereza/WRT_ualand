@@ -3,6 +3,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from playwright.sync_api import expect
 from pages.base_bid_page import BidCreate
+from config import BASE_URL
 import pytest
 
 
@@ -22,5 +23,5 @@ def test_bids_created(api_auction_publish, request, user_fixture):
     page.check_and_verify(page.loc_first_chbox)
     page.check_and_verify(page.loc_second_chbox)
     page.loc_publish_btn.click()
-    expect(page.page).to_have_url("https://qa.ualand.space/my-applications")
+    expect(page.page).to_have_url(f"{BASE_URL}/my-applications")
     expect(page.page.locator("body")).to_contain_text(prozorroId)

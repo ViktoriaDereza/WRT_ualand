@@ -3,6 +3,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from playwright.sync_api import expect
 from pages.base_bid_page import BidCreate
+from config import BASE_URL
 
 
 
@@ -18,7 +19,7 @@ def test_bids_created(logged_in_bidder1, api_auction_publish):
     page.loc_first_chbox.check()
     page.loc_second_chbox.check()
     page.loc_publish_btn.click()
-    expect(page.page).to_have_url("https://qa.ualand.space/my-applications")
+    expect(page.page).to_have_url(f"{BASE_URL}/my-applications")
     #expect(page.page.locator(f"text={prozorroId}")).to_be_visible()
     expect(page.page.locator("body")).to_contain_text(prozorroId)
 
@@ -42,7 +43,7 @@ def test_invoice_pdf_download(logged_in_bidder2, api_auction_publish):
     # The post-publish redirect to /my-applications occasionally takes
     # longer than the default 5s under QA-environment load; give it the
     # same generous allowance check_and_verify already uses above.
-    expect(page.page).to_have_url("https://qa.ualand.space/my-applications", timeout=15000)
+    expect(page.page).to_have_url(f"{BASE_URL}/my-applications", timeout=15000)
     expect(page.page.locator("body")).to_contain_text(prozorroId)
 
     application_link = page.page.get_by_role("link", name=prozorroId)

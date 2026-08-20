@@ -5,6 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from playwright.sync_api import expect
 from pages.login import LoginPage
 from config import (
+    BASE_URL,
     USER_NAME_ORGANIZER,
     USER_NAME_PARTICIPANT1,
     PASSWORD,
@@ -77,7 +78,7 @@ def test_logout_organizer(page):
     login_page.logout()
     page.wait_for_url("**/login", timeout=10000)
 
-    page.goto("https://qa.ualand.space/my-auctions")
+    page.goto(f"{BASE_URL}/my-auctions")
     page.wait_for_url("**/login", timeout=10000)
 
 
