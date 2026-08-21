@@ -127,6 +127,7 @@ def api_auction_publish(api_login, api_auction_create):
     request_context, headers = api_login
     draft_id = api_auction_create
     response = request_context.post(f"api/auctions/{draft_id}/publish", headers=headers)
+    assert response.status == 200, response.text()
     response_json = response.json()
     prozorroId = response_json["prozorroId"]
     yield prozorroId, draft_id
@@ -140,8 +141,10 @@ def api_bid_create(api_login_bidder1, api_auction_publish):
         headers={**headers, "Content-Type": "application/json"})
 
     print("TEXT:", response.text())
+    assert response.status == 200, response.text()
     response_json = response.json()
     bid_id = response_json["id"]
-    request_context.patch(f"api/bids/{bid_id}/publish", headers=headers)
+    patch_response = request_context.patch(f"api/bids/{bid_id}/publish", headers=headers)
+    assert patch_response.status == 200, patch_response.text()
     return bid_id
 

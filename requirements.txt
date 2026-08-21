@@ -1,0 +1,7 @@
+# After `pip install -r requirements.txt`, also run `playwright install chromium`
+# (or `playwright install --with-deps chromium` in CI/Linux) once — pip alone
+# does not download the browser binaries that pytest.ini's --browser=chromium needs.
+pytest==8.4.2
+pytest-playwright==0.7.1
+playwright==1.55.0
+pytest-html
