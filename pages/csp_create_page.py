@@ -31,7 +31,6 @@ class CspCreate:
         self.guarantee = page.locator('input[name="specificData.guaranteeAmount"]')
         self.min_step = page.get_by_text("Мінімальний крок аукціону, %", exact=False).locator("xpath=following::input[1]")
 
-        self.close_notification = page.locator("xpath=/html/body/div[2]/div[3]/div/button")
 #priority data
 
         self.identifier_field = page.get_by_text("Ідентифікатори організації", exact=False).first.locator("xpath=following::div[@role='combobox'][1]")
@@ -95,6 +94,39 @@ class CspCreate:
         if close_btn.is_visible():
             close_btn.click()
 
+    def close_auction_notification(self):
+        # A "Повідомлення з аукціону" notistack toast can pop in unexpectedly
+        # (independent of any action the test takes, similar to the Telegram
+        # promo dialog above) and overlay the form, intercepting pointer
+        # events on whatever field the test is about to interact with.
+        # Unlike the Telegram dialog, it has no close button anywhere in its
+        # DOM (verified directly against the live page - zero <button>
+        # elements in its subtree) and it never auto-dismisses, so there is
+        # nothing to click: the earlier locator here
+        # (ancestor::*[.//button][1]//button) climbed straight past the
+        # notification looking for *any* ancestor containing *any* button and
+        # ended up clicking an unrelated button elsewhere on the page,
+        # leaving the notification open. It's neutralized at the source
+        # instead - the context-level init script (TELEGRAM_PROMO_NEUTRALIZE_SCRIPT
+        # in conftest.py) resets pointer-events back to none on the toast's
+        # per-instance wrapper div, so it can no longer intercept clicks meant
+        # for the form underneath it even while still visible. Checking
+        # .notistack-CollapseWrapper here (a layer below that wrapper, whose
+        # own pointer-events is only ever set by inheriting from it) confirms
+        # the reset actually reached this toast, so a regression here fails
+        # loudly at the notification instead of resurfacing as a confusing
+        # stuck click somewhere later in the flow.
+        notification = self.page.get_by_text("Повідомлення з аукціону", exact=True).first
+        if notification.is_visible():
+            wrapper = notification.locator(
+                "xpath=ancestor::*[contains(concat(' ', normalize-space(@class), ' '), ' notistack-CollapseWrapper ')][1]"
+            )
+            expect(wrapper).to_have_css("pointer-events", "none")
+
+    def dismiss_blocking_overlays(self):
+        self.close_telegram_modal()
+        self.close_auction_notification()
+
     def disable_chat_widget_overlay(self):
         # The bwchat live-chat widget's offline greeting bubble can overlap
         # form controls (e.g. open dropdown menu items) and silently swallow
@@ -103,25 +135,25 @@ class CspCreate:
         self.page.add_style_tag(content="bwchat, bwchat * { pointer-events: none !important; }")
 
     def select_from_dropdown(self, dropdown_locator, option_locator):
-         self.close_telegram_modal()
+         self.dismiss_blocking_overlays()
          dropdown_locator.click()
          expect(option_locator).to_be_visible(timeout=5000)
          option_locator.click()
 
     def input_field(self, value_locator, value):
-        self.close_telegram_modal()
+        self.dismiss_blocking_overlays()
         value_locator.click()
         value_locator.fill(value)
 
     def file_upload(self, file_locator):
-        self.close_telegram_modal()
+        self.dismiss_blocking_overlays()
         assert TEST_PDF_PATH.exists(), f"Test PDF not found at {TEST_PDF_PATH}"
         file_locator.set_input_files(str(TEST_PDF_PATH))
 
 
 
     def cav_selection(self, locator, dropdown_locator, option_locator):
-        self.close_telegram_modal()
+        self.dismiss_blocking_overlays()
         locator.click()
         expect(dropdown_locator).to_be_visible(timeout=5000)
         dropdown_locator.check()

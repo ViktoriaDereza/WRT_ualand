@@ -28,7 +28,6 @@ def ui_auction_draft_with_document(logged_in_organizer):
 
     create_page.input_field(create_page.start_price, "10000")
     create_page.input_field(create_page.min_step, "2")
-    # create_page.notification_close(create_page.close_notification)
     create_page.select_from_dropdown(create_page.identifier_field, create_page.identifier_select)
     create_page.input_field(create_page.full_name, "Повне найменування організації")
     create_page.input_field(create_page.codEDRPOU, "12345678")

@@ -20,11 +20,24 @@ def pytest_collection_modifyitems(items):
 
 # A "subscribe to our Telegram bot" promo dialog pops up on its own timer
 # (~30s after login, independent of route) and can intercept clicks on
-# whatever the test happens to be doing at that moment. Likewise, a notistack
-# "your profile is activated" toast pops in asynchronously (independent of
-# any action the test takes) and renders bottom-right, where it can overlap
-# the last entries of an open dropdown - e.g. FAST_MANUAL in the auction
-# subtype list - and swallow the click. add_style_tag() only affects the
+# whatever the test happens to be doing at that moment. Likewise, notistack
+# toasts (e.g. "your profile is activated", "Повідомлення з аукціону") pop in
+# asynchronously (independent of any action the test takes) and can overlap
+# form fields - e.g. FAST_MANUAL in the auction subtype list - and swallow
+# the click. These toasts render with no close button in their DOM at all
+# and never auto-dismiss, so there is nothing to click to get rid of them;
+# pointer-events: none is the only reliable way to stop them intercepting
+# clicks. notistack keeps its outer .notistack-SnackbarContainer itself
+# non-interactive (pointer-events: none) but each toast is wrapped in its own
+# per-instance div (an unstable, hash-suffixed class - not something to
+# select by name) that resets pointer-events back to "all", and that reset
+# is inherited by every layer below it (.notistack-CollapseWrapper, the
+# MuiAlert content, ...) regardless of what those layers' own content does.
+# The only stable hook for that per-instance wrapper is its position in the
+# DOM: it's always a direct child of .notistack-SnackbarContainer. Targeting
+# it by structure re-neutralizes pointer-events right where notistack turns
+# it back on, and every layer beneath it inherits "none" again from there.
+# add_style_tag() only affects the
 # current document, so it doesn't survive a full page.goto() or a new tab
 # (e.g. the tab BidCreate opens for the auction page). Registering this as a
 # context-level init script instead re-injects the CSS into every document
@@ -34,7 +47,7 @@ TELEGRAM_PROMO_NEUTRALIZE_SCRIPT = """
 document.addEventListener('DOMContentLoaded', () => {
     const style = document.createElement('style');
     style.textContent = ".MuiDialog-container:has(a[href*='t.me/']) { pointer-events: none !important; }" +
-        "[class*='notistack-MuiContent'] { pointer-events: none !important; }";
+        ".notistack-SnackbarContainer > div { pointer-events: none !important; }";
     document.head.appendChild(style);
 });
 """
